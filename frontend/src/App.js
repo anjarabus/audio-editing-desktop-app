@@ -32,27 +32,6 @@ const SpliceAudio = () => {
     setCsvFile(event.target.files[0]);
   };
 
-  const handleAudioFileChange = (event) => {
-    // Convert FileList to array
-    const newFilesArray = Array.from(event.target.files);
-
-    // Update state with existing files and new files
-    setAudioFiles((prevFiles) => [...prevFiles, ...newFilesArray]);
-    // setAudioFileNames((prevFiles) =>
-    //   [...prevFiles, ...newFilesArray].map((file) => file.name)
-    // );
-    setAudioFileNames((prevFileNames) => [
-      ...prevFileNames,
-      ...newFilesArray.map((file) => file.name),
-    ]);
-  };
-
-  // Log the number of files
-  useEffect(() => {
-    console.log("Number of files:", audioFiles.length);
-    console.log("Audio file names:", audioFileNames);
-  }, [audioFiles, audioFileNames]);
-
   const handleCsvUpload = async () => {
     if (!csvFile) return;
 
@@ -136,6 +115,39 @@ const SpliceAudio = () => {
       setAudioLoading(false);
     }
   };
+
+  const handleAudioFileChange = (event) => {
+    // Convert FileList to array
+    const newFilesArray = Array.from(event.target.files);
+
+    // Update state with existing files and new files
+    setAudioFiles((prevFiles) => [...prevFiles, ...newFilesArray]);
+    // setAudioFileNames((prevFiles) =>
+    //   [...prevFiles, ...newFilesArray].map((file) => file.name)
+    // );
+    setAudioFileNames((prevFileNames) => [
+      ...prevFileNames,
+      ...newFilesArray.map((file) => file.name),
+    ]);
+  };
+
+  const handleRemoveFile = (fileName) => {
+    // Remove file from audioFiles state
+    setAudioFiles((prevFiles) =>
+      prevFiles.filter((file) => file.name !== fileName)
+    );
+
+    // Remove file from audioFileNames state
+    setAudioFileNames((prevFileNames) =>
+      prevFileNames.filter((name) => name !== fileName)
+    );
+  };
+
+  // Log the number of files
+  useEffect(() => {
+    console.log("Number of files:", audioFiles.length);
+    console.log("Audio file names:", audioFileNames);
+  }, [audioFiles, audioFileNames]);
 
   /////////////////// FETCH PROCESSED AUDIO ////////////////////
 
@@ -358,12 +370,34 @@ const SpliceAudio = () => {
                   {audioLoading ? "Editing..." : "Edit Files"}
                 </button>
 
-                {audioFileNames.length > 0 && (
+                {/* {audioFileNames.length > 0 && (
                   <div className="file-list">
                     <h4>Files to Upload:</h4>
                     <ul>
                       {audioFileNames.map((fileName, index) => (
                         <li key={index}>{fileName}</li>
+                      ))}
+                      <button onClick={() => handleRemoveFile(fileName)}>
+                        Remove
+                      </button>
+                    </ul>
+                  </div>
+                )} */}
+
+                {audioFileNames.length > 0 && (
+                  <div className="file-list">
+                    <h4>Files to Upload:</h4>
+                    <ul>
+                      {audioFileNames.map((fileName, index) => (
+                        <li key={index}>
+                          {fileName}
+                          <button
+                            onClick={() => handleRemoveFile(fileName)}
+                            className="x-button"
+                          >
+                            X
+                          </button>
+                        </li>
                       ))}
                     </ul>
                   </div>
