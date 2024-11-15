@@ -1,0 +1,23 @@
+{
+  "appId": "com.company.app-name",
+  "productName": "audio-app",
+  "copyright": "Copyright © 2024 Anja",
+
+  "mac": {
+    "icon": "electron/resources/PAMicn.icns"
+  },
+
+  "files": [
+    "electron/main.js",
+    "electron/preload.js",
+    "frontend/build/**/*",
+    "backend/dist/**/*",
+    "node_modules/**/*"
+  ],
+
+  "directories": {
+    "output": "dist"
+  },
+
+  "asar": false
+}

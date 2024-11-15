@@ -1,0 +1,13 @@
+desktop_env/
+backend/build/
+backend/dist/
+backend/edited_audios/
+backend/__pycache__/
+backend/.DS_Store/
+frontend/build/
+frontend/node_modules/
+frontend/.DS_Store/
+node_modules/
+dist/
+.DS_Store
+
