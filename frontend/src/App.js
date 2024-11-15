@@ -38,13 +38,20 @@ const SpliceAudio = () => {
 
     // Update state with existing files and new files
     setAudioFiles((prevFiles) => [...prevFiles, ...newFilesArray]);
-    setAudioFileNames((prevFiles) =>
-      [...prevFiles, ...newFilesArray].map((file) => file.name)
-    );
-
-    // Log the number of files
-    console.log("Number of files:", [...audioFiles, ...newFilesArray].length);
+    // setAudioFileNames((prevFiles) =>
+    //   [...prevFiles, ...newFilesArray].map((file) => file.name)
+    // );
+    setAudioFileNames((prevFileNames) => [
+      ...prevFileNames,
+      ...newFilesArray.map((file) => file.name),
+    ]);
   };
+
+  // Log the number of files
+  useEffect(() => {
+    console.log("Number of files:", audioFiles.length);
+    console.log("Audio file names:", audioFileNames);
+  }, [audioFiles, audioFileNames]);
 
   const handleCsvUpload = async () => {
     if (!csvFile) return;
@@ -296,24 +303,27 @@ const SpliceAudio = () => {
 
   return (
     <div>
-      <div className="background-img"></div>
+      <div className="header-img"></div>
 
       <header className="header">
-        <h1>
-          The <span className="big-text">P</span>hysics and{" "}
-          <span className="big-text">A</span>stronomy{" "}
-          <span className="big-text">M</span>entorship Talks <br></br>
-          <span className="fancy-text">Story-boarding Application</span>
-        </h1>
+        <span className="small-text-special">The </span>
+        <span className="big-text">P</span>
+        <span className="small-text">hysics and </span>
+        <span className="big-text">A</span>
+        <span className="small-text">stronomy </span>
+        <span className="big-text">M</span>
+        <span className="small-text">entorship </span>
+        <span className="small-text-special">Talks</span> <br></br>
+        <span className="fancy-text">Story-boarding Application</span>
       </header>
 
       <div className="root">
         <div className="inputs-row">
           <div className="inputs-column">
             <div className="text-content">
-              <h3>First... upload your story-board ;)</h3>
+              <h1>First... upload your story-board ;)</h1>
               <p>Upload a CSV file. You do not need to remove extra text.</p>
-              <label className="file-upload-button">
+              <label className="general-button">
                 <input
                   type="file"
                   accept=".csv"
@@ -326,14 +336,15 @@ const SpliceAudio = () => {
                 {csvLoading ? "Uploading..." : "Upload"}
               </button>
             </div>
-            <div className="text-content">
-              <h3>Next... upload your audio files :)</h3>
-              <p>
-                You can upload as many files as you want. <br></br> They will
-                all be edited according to the timestamps in your story-board.
+            <div>
+              <h1>Next... upload your audio files :)</h1>
+              <p className="text-content">
+                Upload your audio files. <br></br> They will all be edited
+                according to the timestamps in your story-board. <br></br>
+                This may take a few minutes!
               </p>
               <div className="file-upload-container">
-                <label className="file-upload-button">
+                <label className="general-button">
                   <input
                     type="file"
                     accept=".m4a .mp3"
@@ -341,11 +352,12 @@ const SpliceAudio = () => {
                     onChange={handleAudioFileChange}
                     className="file-input"
                   />
-                  Choose File
+                  Choose Files
                 </label>
                 <button onClick={handleAudioUpload} className="general-button">
-                  {audioLoading ? "Uploading..." : "Upload"}
+                  {audioLoading ? "Editing..." : "Edit Files"}
                 </button>
+
                 {audioFileNames.length > 0 && (
                   <div className="file-list">
                     <h4>Files to Upload:</h4>
@@ -363,7 +375,7 @@ const SpliceAudio = () => {
           <div className="timestamps-column">
             {timestamps.extracted_timestamps.length > 0 && (
               <div className="timestamps-container">
-                <h4>Extracted Timestamps:</h4>
+                <h2>Extracted Timestamps:</h2>
                 <p style={{ marginBottom: "20px" }}>
                   You can scroll through the timestamps here to make sure they
                   look right!
@@ -435,8 +447,7 @@ const SpliceAudio = () => {
 
         <div className="download-row">
           <div className="text-content">
-            <h3> Finally... download your processed audio files!</h3>
-            <p>This might take a few minutes... </p>
+            <h1> Finally... download your processed audio files!</h1>
             <div>
               <button onClick={handleAudioDownload} className="general-button">
                 {downloadLoading ? "Downloading..." : "Download"}

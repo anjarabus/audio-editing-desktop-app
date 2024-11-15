@@ -11,10 +11,11 @@ import io
 import logging
 
 from pydub import AudioSegment, utils
+
 current_dir = os.path.dirname(os.path.abspath(__file__))
 ffmpeg_path = os.path.join(current_dir, "ffmpeg")
 ffprobe_path = os.path.join(current_dir, "ffprobe")
-#  "/Users/anjarabus/Documents/ELECTRON/audio_desktop_app/backend/ffmpeg"
+
 AudioSegment.converter = ffmpeg_path
 AudioSegment.ffmpeg = ffmpeg_path
 AudioSegment.ffprobe = ffprobe_path
