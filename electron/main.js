@@ -5,13 +5,14 @@ const { app, BrowserWindow } = require("electron");
 const path = require("path");
 const fs = require("fs");
 // const isDev = import("electron-is-dev");
-const isDev = true;
+const isDev = false;
 const { spawn } = require("child_process");
 const execFile = require("child_process").execFile;
 const app_instance = app.requestSingleInstanceLock();
 
 let pythonExecutable;
 let pythonProcess;
+let tempDir = ""; // Global variable to store the temp directory path
 
 if (isDev) {
   pythonExecutable = "/opt/miniconda3/bin/python"; //Dev mode: load python from local
@@ -33,6 +34,12 @@ if (isDev) {
   // Log the stdout to the console
   pythonProcess.stdout.on("data", (data) => {
     console.log(`stdout: ${data.toString()}`);
+
+    const tempDirMatch = data.toString().match(/Temporary directory: (.*)/); // Extract temp_dir path from Python output
+    if (tempDirMatch) {
+      tempDir = tempDirMatch[1].trim();
+      console.log(`Temp directory: ${tempDir}`);
+    }
   });
 
   // Log stderr (this will show any errors from the Python process)
@@ -54,16 +61,14 @@ function createWindow() {
     },
   });
 
+  mainWindow.webContents.openDevTools();
+
   if (isDev) {
     mainWindow.loadURL("http://localhost:8080"); // Dev mode: Load React app from Webpack Dev Server
-    mainWindow.webContents.openDevTools();
   } else {
-    // mainWindow.loadFile(
-    //   path.join(__dirname, "../frontend/build", "index.html")
-    // ); // Prod mode: Load from production build
     mainWindow.loadFile(
-      path.join(app.getAppPath(), "frontend", "build", "index.html")
-    ); //use when asar:false
+      path.join(app.getAppPath(), "frontend", "build", "index.html") // Prod mode: Load from production build
+    );
   }
 
   // only one instance exists
@@ -105,6 +110,28 @@ app.on("before-quit", () => {
   } else {
     console.log("Killing Python process...");
     pythonProcess.kill();
+
+    if (tempDir) {
+      execFile(
+        "python",
+        [path.join(app.getAppPath(), "backend", "cleanup.py"), tempDir],
+        (err, stdout, stderr) => {
+          if (err) {
+            console.error(`Error executing cleanup.py: ${stderr}`);
+          } else {
+            console.log("Cleanup script executed successfully:", stdout);
+          }
+        }
+      );
+      // try {
+      //   fs.rmdirSync(tempDir);
+      //   console.log("Directory removed");
+      // } catch (err) {
+      //   console.error("Error removing directory:", err);
+      // }
+    } else {
+      console.error("no temp dir found");
+    }
   }
 });
 

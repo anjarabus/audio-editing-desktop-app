@@ -12,6 +12,9 @@
     "electron/preload.js",
     "frontend/build/**/*",
     "backend/dist/**/*",
+    "backend/ffmpeg",
+    "backend/ffprobe",
+    "backend/cleanup.py",
     "node_modules/**/*"
   ],
 

@@ -9,12 +9,35 @@ import zipfile
 import os
 import io
 import logging
+import tempfile
 
 from pydub import AudioSegment, utils
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-ffmpeg_path = os.path.join(current_dir, "ffmpeg")
-ffprobe_path = os.path.join(current_dir, "ffprobe")
+isDev = 0; 
+if isDev: 
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    ffmpeg_path = os.path.join(current_dir, "ffmpeg")
+    ffprobe_path = os.path.join(current_dir, "ffprobe")
+
+    upload_folder = "edited_audios/"
+else: 
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(current_dir)  # Go up one directory
+    grandparent_dir = os.path.dirname(parent_dir)  # Go up another directory
+    greatgrandparent_dir = os.path.dirname(grandparent_dir)  # Go up another directory
+
+    ffmpeg_path = os.path.join(greatgrandparent_dir, "ffmpeg")
+    ffprobe_path = os.path.join(greatgrandparent_dir, "ffprobe")
+
+    # upload_folder = os.path.join(os.path.dirname(sys.executable), "edited_audios/")
+    # upload_folder = os.path.join(os.getenv('HOME'), 'Library', 'Application Support', 'PAMtalks', 'edited_audios')
+    
+    temp_dir = tempfile.mkdtemp()
+    print(f"Temporary directory: {temp_dir}") # need this to capture path/to/temp_dir inside main.js!
+
+    upload_folder = os.path.join(temp_dir, 'edited_audios')
+
+
 
 AudioSegment.converter = ffmpeg_path
 AudioSegment.ffmpeg = ffmpeg_path
@@ -174,7 +197,7 @@ async def upload_audio(
 
         name = filename.split('.')[0]
 
-        upload_folder = "edited_audios/"
+       
         os.makedirs(upload_folder, exist_ok=True)
         
         file_path = os.path.join(upload_folder, f"spliced_output_{random_id}.mp3")
@@ -215,7 +238,7 @@ async def play_audio(job_id: str):
 @app.get("/static/{file_name:path}")
 def function(file_name: str):
     #file_path = "edited_audios/"+file_name 
-    upload_folder = "edited_audios/"
+    # upload_folder = "edited_audios/"
     file_path = os.path.join(upload_folder, file_name)
     
     response = FileResponse(file_path, media_type="audio/mpeg")
