@@ -9,9 +9,6 @@ a = Analysis(
     ['backend.py'],  # Main Python script to be packaged
     pathex=[],  # List any additional directories you want PyInstaller to look in
     binaries=[],
-    datas=[
-        ('cleanup.py','app/backend/'),  
-    ],
 
     hiddenimports=[  # Hidden imports, if any
         "uvicorn.logging",

@@ -9,7 +9,7 @@ import zipfile
 import os
 import io
 import logging
-import tempfile
+# import tempfile
 
 from pydub import AudioSegment, utils
 
@@ -29,13 +29,12 @@ else:
     ffmpeg_path = os.path.join(greatgrandparent_dir, "ffmpeg")
     ffprobe_path = os.path.join(greatgrandparent_dir, "ffprobe")
 
-    # upload_folder = os.path.join(os.path.dirname(sys.executable), "edited_audios/")
-    # upload_folder = os.path.join(os.getenv('HOME'), 'Library', 'Application Support', 'PAMtalks', 'edited_audios')
-    
-    temp_dir = tempfile.mkdtemp()
+
+    # temp_dir = tempfile.mkdtemp()
+    temp_dir = "/tmp/"
     print(f"Temporary directory: {temp_dir}") # need this to capture path/to/temp_dir inside main.js!
 
-    upload_folder = os.path.join(temp_dir, 'edited_audios')
+    upload_folder = os.path.join(temp_dir, 'edited_audios/')
 
 
 
